@@ -18,17 +18,17 @@ public class TaskService {
     }
 
     public List<Task> getAll(int offset, int limit){
-        return taskDAO.getAll(offset, limit);
+        return taskDAO.allTasks(offset, limit);
 
     }
 
     public int getAllCount(){
-        return taskDAO.getAllCount();
+        return taskDAO.allCount();
     }
 
     @Transactional
     public Task edit(int id, String description, Status status){
-        var task = taskDAO.getById(id);
+        var task = taskDAO.findById(id);
         if(Objects.isNull(task)){
             throw new RuntimeException("Not found");
         }
@@ -51,7 +51,7 @@ public class TaskService {
 
     @Transactional
     public void delete(int id){
-        var task = taskDAO.getById(id);
+        var task = taskDAO.findById(id);
         if(Objects.isNull(task)){
             throw new RuntimeException("Not found");
         }

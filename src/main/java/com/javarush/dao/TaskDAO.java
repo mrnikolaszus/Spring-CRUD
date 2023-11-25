@@ -19,24 +19,25 @@ public class TaskDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-    public List<Task> getAll(int offset, int limit){
-        Query<Task> query = getSession().createQuery("select t from Task t", Task.class);
-        query.setFirstResult(offset);
-        query.setMaxResults(limit);
-        return query.getResultList();
+    @Transactional(readOnly = true)
+    public List<Task> allTasks(int offset, int limit){
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Task", Task.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .list();
     }
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-    public int getAllCount(){
-        Query<Long> query = getSession().createQuery("select count(t) from Task t", Long.class);
-        return Math.toIntExact(query.uniqueResult());
+    public int allCount(){
+        return Math.toIntExact(sessionFactory.getCurrentSession()
+                .createQuery("SELECT COUNT(*) FROM Task", Long.class)
+                .getSingleResult());
     }
     @Transactional(propagation = Propagation.REQUIRED)
-    public Task getById(int id){
-        Query<Task> query = getSession().createQuery("select t from Task t where t.id = :ID", Task.class);
-        query.setParameter("ID", id);
-        return query.uniqueResult();
-//        return getSession().find(Task.class, id);
+    public Task findById(int id){
+        return sessionFactory.getCurrentSession()
+                .get(Task.class, id);
+
 
     }
     @Transactional(propagation = Propagation.REQUIRED)

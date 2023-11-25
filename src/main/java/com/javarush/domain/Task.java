@@ -1,7 +1,9 @@
 package com.javarush.domain;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(schema = "todo", name = "task")
 public class Task {
@@ -9,33 +11,11 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "status", columnDefinition = "TINYINT")
+    @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
     @Enumerated(EnumType.ORDINAL)
     private Status status;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
 }

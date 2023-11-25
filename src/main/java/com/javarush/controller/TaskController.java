@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping
 public class TaskController {
     private final TaskService taskService;
 
@@ -21,7 +21,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping
     public String tasks(Model model,
                             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                             @RequestParam(value = "limit", required = false, defaultValue = "10") int limit
@@ -50,7 +50,7 @@ public class TaskController {
         return tasks(model, 1, 10);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public void add(Model model,
                      @RequestBody TaskInfo info){
         var task = taskService.create(info.getDescription(), info.getStatus());
