@@ -1,15 +1,12 @@
 package com.javarush.controller;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.javarush.domain.Status;
 import com.javarush.domain.Task;
 import com.javarush.service.TaskService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
@@ -21,7 +18,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @RequestMapping
+    @RequestMapping("/")
     public String tasks(Model model,
                             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                             @RequestParam(value = "limit", required = false, defaultValue = "10") int limit
@@ -35,35 +32,52 @@ public class TaskController {
             var pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().toList();
             model.addAttribute("page_numbers", pageNumbers);
         }
-        return "tasks";
+        return "index";
     }
 
-    @PostMapping("/{id}")
-    public String edit(Model model,
-                     @PathVariable Integer id,
-                     @RequestBody TaskInfo info){
-        if (Objects.isNull(id) || id <= 0){
-            throw new RuntimeException("Invalid id");
+    @GetMapping("/{id}/edit")
+    public String editTaskForm(@PathVariable int id, Model model) {
+        model.addAttribute("editTask", taskService.getTaskById(id));
+
+        return "edit";
+    }
+
+    @PutMapping
+    public String updateTask(@ModelAttribute("editTask") Task task) {
+        taskService.updateTask(task);
+
+        return "redirect:/";
+    }
+
+
+    @PostMapping("/new")
+    public String addTask(@RequestParam("description") String description,
+                          @RequestParam("status") Status status,
+                          Model model) {
+        if (description == null || description.isEmpty() || status == null ) {
+            throw new RuntimeException("Invalid task data");
         }
-        var task = taskService.edit(id, info.getDescription(), info.getStatus());
 
-        return tasks(model, 1, 10);
+        Task newTask = taskService.create(description, status);
+        model.addAttribute("newTask", newTask);
+
+        int all = taskService.getAllCount();
+        int result;
+        if (all%10 ==0){
+            result = all/10;
+        } else result =all/10+1;
+        return tasks(model, result, 10);
     }
 
-    @PostMapping
-    public void add(Model model,
-                     @RequestBody TaskInfo info){
-        var task = taskService.create(info.getDescription(), info.getStatus());
-    }
-
-    @DeleteMapping("/{id}")
-    public String delete(Model model,
-                         @PathVariable Integer id){
+    @DeleteMapping("{id}")
+    public String delete(@PathVariable Integer id){
         if (Objects.isNull(id) || id <= 0){
             throw new RuntimeException("Invalid id");
         }
         taskService.delete(id);
-        return tasks(model, 1, 10);
 
+        return "redirect:/";
     }
+
+
 }

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit task</title>
+
+
+</head>
+<body>
+
+<p class="rounded-box">Edit task</p>
+<form th:action="@{/}" th:method="PUT" th:object="${editTask}">
+  <input type="hidden" th:field="*{id}">
+
+  <p>
+    <label for="description">Description</label>
+    <input id="description" type="text" th:field="*{description}">
+  </p>
+
+  <label for="status">Status</label>
+  <select id="status" th:field="*{status}">
+    <option th:each="status : ${T(com.javarush.domain.Status).values()}"
+            th:value="${status}" th:text="${status}">
+    </option>
+  </select>
+
+  <input type="submit" value="Update"/>
+</form>
+
+</body>
+</html>

@@ -60,4 +60,21 @@ public class TaskService {
     }
 
 
+    public Task getTaskById(Integer id) {
+        return taskDAO.findById(id);
+    }
+
+    @Transactional
+    public void updateTask(Task task) {
+        var attachedTask = taskDAO.findById(task.getId());
+        if (attachedTask == null) {
+            throw new RuntimeException("Task not found");
+        }
+
+
+        attachedTask.setDescription(task.getDescription());
+        attachedTask.setStatus(task.getStatus());
+
+        taskDAO.saveOrUpdate(attachedTask);
+    }
 }

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tasks</title>
+    <link href="style/main.css" rel="stylesheet">
+
+</head>
+<body>
+<div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th colspan="2">Action</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="task : ${tasks}">
+            <td th:text="${task.id}"></td>
+            <td th:text="${task.description}"></td>
+            <td th:text="${task.status}"></td>
+            <td>
+                <form th:action="@{/{id}/edit(id=${task.id})}" th:method="get">
+                    <button type="submit">Edit</button>
+                </form>
+            </td>
+
+            <td>
+                <form th:method="DELETE" th:action="@{/{id}(id=${task.id})}">
+                    <input type="hidden" name="_method" value="delete" />
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <button th:each="current_page: ${page_numbers}">
+        <a th:href="@{/(page=${current_page}, limit=10)}" th:text="${current_page}"></a>
+    </button>
+        <br>
+
+    <h2>Add New Task</h2>
+    <form th:method="POST" th:action="@{/new}" >
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" required>
+
+        <label for="status">Status:</label>
+        <select id="status" name="status" required>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="DONE">Done</option>
+            <option value="PAUSED">Paused</option>
+        </select>
+
+        <button type="submit">Add Task</button>
+    </form>
+
+
+</div>
+
+</body>
+</html>
