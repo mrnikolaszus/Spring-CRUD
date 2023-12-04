@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.cfg.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -17,6 +18,14 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 public class AppConfig {
+    @Value("${hibernate.dialect}")
+    private  String HIBERNATEDIALECT;
+
+    @Value("${spring.datasource.driver-class-name}")
+    private String HBM2DDLAUTO;
+
+    @Value("${hibernate.hbm2ddl-auto}")
+    private String DRIVERCLASSNAME;
     @Bean
     public LocalSessionFactoryBean sessionFactoryBean(){
         LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
@@ -28,11 +37,10 @@ public class AppConfig {
 
     private Properties hibernateProperties() {
         Properties properties = new Properties();
-        properties.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
-        properties.put(Environment.DRIVER, "com.p6spy.engine.spy.P6SpyDriver");
-        properties.put(Environment.HBM2DDL_AUTO, "validate");
+        properties.put(Environment.DIALECT, HIBERNATEDIALECT);
+        properties.put(Environment.DRIVER, DRIVERCLASSNAME);
+        properties.put(Environment.HBM2DDL_AUTO, HBM2DDLAUTO);
         return properties;
-
     }
 
     @Bean
